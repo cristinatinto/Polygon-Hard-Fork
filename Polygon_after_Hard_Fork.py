@@ -53,7 +53,7 @@ st.write('')
 sql="""
 with txns as(
 select
-  date_trunc('day',block_timestamp) as date,
+  date_trunc('week',block_timestamp) as date,
   count(distinct tx_hash) as n_txns,
   count(distinct from_address) as n_wallets,
   sum(tx_fee) as tx_fee_luna
@@ -68,7 +68,7 @@ select
   count(from_address) as n_new_wallets
   from (
 select
-  date_trunc('day',min(block_timestamp)) as date,
+  date_trunc('week',min(block_timestamp)) as date,
   from_address
 from polygon.core.fact_transactions
 group by from_address
@@ -89,7 +89,7 @@ order by date desc
 
 sql2="""
 select
-  trunc(block_timestamp,'day') as date,
+  trunc(block_timestamp,'week') as date,
   case when block_number>=38189056 then 'After Hard Fork' else 'Before Hard Fork' end as period,
   sum(tx_fee) as fees,
   sum(fees) over (order by date) as cum_fees,
@@ -241,9 +241,9 @@ total_supp as (select sum(received_amount) as total_supply
   left join SEND s on r.MATIC_TO_ADDRESS=s.MATIC_FROM_ADDRESS
   where sent_amount is null),
 t1 as
-(select date_trunc('day',BLOCK_TIMESTAMP) as date,
-sum(case when simbol_in ilike '%MATIC%' then AMOUNT_IN else null end) as from_amountt,
-sum(case when simbol_out ilike '%MATIC%' then AMOUNT_OUT else null end) as to_amountt,
+(select date_trunc('week',BLOCK_TIMESTAMP) as date,
+sum(case when SYMBOL_IN ilike '%MATIC%' then AMOUNT_IN else null end) as from_amountt,
+sum(case when SYMBOL_OUT ilike '%MATIC%' then AMOUNT_OUT else null end) as to_amountt,
 from_amountt-to_amountt as circulating_volume
 from
   polygon.sushi.ez_swaps
@@ -280,9 +280,9 @@ total_supp as (select sum(received_amount) as total_supply
   left join SEND s on r.MATIC_TO_ADDRESS=s.MATIC_FROM_ADDRESS
   where sent_amount is null),
 t1 as
-(select date_trunc('day',BLOCK_TIMESTAMP) as date,
-sum(case when simbol_in ilike '%MATIC%' then AMOUNT_IN else null end) as from_amountt,
-sum(case when simbol_out ilike '%MATIC%' then AMOUNT_OUT else null end) as to_amountt,
+(select date_trunc('week',BLOCK_TIMESTAMP) as date,
+sum(case when SYMBOL_IN ilike '%MATIC%' then AMOUNT_IN else null end) as from_amountt,
+sum(case when SYMBOL_OUT ilike '%MATIC%' then AMOUNT_OUT else null end) as to_amountt,
 from_amountt-to_amountt as circulating_volume
 from
   polygon.sushi.ez_swaps
@@ -341,7 +341,7 @@ st.markdown('● Swaps activity')
 
 sql="""
 select
-   date_trunc('day',block_timestamp) as date,
+   date_trunc('week',block_timestamp) as date,
    case when date>='2023-01-17' then 'After Hard Fork' else 'Before Hard Fork' end as period,
   count(distinct contract_address) as n_contracts,
   sum(n_contracts) over (partition by period order by date asc rows between unbounded preceding and current row) as cum_n_contracts
@@ -358,7 +358,7 @@ sql2="""
 with new_contracts as (
 select
 distinct contract_address,
-min(trunc(block_timestamp,'day')) as debut
+min(trunc(block_timestamp,'week')) as debut
 from polygon.core.fact_event_logs group by 1
 )
 select
@@ -376,7 +376,7 @@ order by date desc
 sql3="""
 with txns as(
 select
-  date_trunc('day',block_timestamp) as date,
+  date_trunc('week',block_timestamp) as date,
       case when date>='2023-01-17' then 'After Hard Fork' else 'Before Hard Fork' end as period,
   count(distinct tx_hash) as n_txns,
   count(distinct origin_from_address) as n_wallets,
@@ -394,7 +394,7 @@ select
   count(origin_from_address) as n_new_wallets
   from (
 select
-  date_trunc('day',min(block_timestamp)) as date,
+  date_trunc('week',min(block_timestamp)) as date,
   origin_from_address
 from polygon.core.fact_event_logs where (event_name='Swap' or event_name='swap')
 group by origin_from_address
