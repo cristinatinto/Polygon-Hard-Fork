@@ -73,7 +73,7 @@ select
 from polygon.core.fact_transactions
 group by tx_from
 )
-  where date >= current_date - INTERVAL '3 MONTHS
+  where date >= current_date - INTERVAL '3 MONTHS'
 group by date
 )
 
