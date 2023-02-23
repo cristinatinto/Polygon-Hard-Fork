@@ -58,7 +58,7 @@ select
   count(distinct tx_from) as n_wallets,
   sum(tx_fee) as tx_fee_luna
 from polygon.core.fact_transactions
-  where block_timestamp >= current_date - INTERVAL '3 MONTHS
+  where block_timestamp >= current_date - INTERVAL '3 MONTHS'
 group by date
 order by date desc
 ),
