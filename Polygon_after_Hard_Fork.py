@@ -58,7 +58,7 @@ select
   count(distinct from_address) as n_wallets,
   sum(tx_fee) as tx_fee_luna
 from polygon.core.fact_transactions
-  where block_timestamp >= current_date - INTERVAL '3 MONTHS'
+  where block_timestamp >= current_date - INTERVAL '10 WEEKS'
 group by date
 order by date desc
 ),
@@ -73,7 +73,7 @@ select
 from polygon.core.fact_transactions
 group by from_address
 )
-  where date >= current_date - INTERVAL '3 MONTHS'
+  where date >= current_date - INTERVAL '10 WEEKS'
 group by date
 )
 
@@ -90,7 +90,7 @@ order by date desc
 sql2="""
 select
   trunc(block_timestamp,'week') as date,
-  case when block_number>=38189056 then 'After Hard Fork' else 'Before Hard Fork' end as period,
+  case when date>='2023-01-17' then 'After Hard Fork' else 'Before Hard Fork' end as period,
   sum(tx_fee) as fees,
   sum(fees) over (order by date) as cum_fees,
   avg(tx_fee) as avg_tx_fee,
@@ -100,7 +100,7 @@ select
   avg(gas_limit) as gas_limit,
   avg(gas_price) as gas_price
   from  polygon.core.fact_transactions
-  where block_timestamp > getdate() - interval '3 MONTHS'
+  where block_timestamp > getdate() - interval '10 WEEKS'
   group by 1,2
 """
 
@@ -316,13 +316,13 @@ with st.expander("Check the analysis"):
     col1,col2=st.columns(2)
 
     with col1:
-        st.metric('Circulating supply before holidays',df['circulating_supply'])
-    col2.metric('Circulating supply after holidays',df2['circulating_supply'])
+        st.metric('Circulating supply before Hard Fork',df['circulating_supply'])
+    col2.metric('Circulating supply after Hard Fork',df2['circulating_supply'])
 
     col1,col2=st.columns(2)
     with col1:
-        st.metric('Ratio before holidays',df['ratio'])
-    col2.metric('Ratio after holidays',df2['ratio'])
+        st.metric('Ratio before Hard Fork',df['ratio'])
+    col2.metric('Ratio after Hard Fork',df2['ratio'])
 
 
 
@@ -346,7 +346,7 @@ select
   count(distinct contract_address) as n_contracts,
   sum(n_contracts) over (partition by period order by date asc rows between unbounded preceding and current row) as cum_n_contracts
 from polygon.core.fact_event_logs
-where block_timestamp>=current_date-INTERVAL '3 MONTHS'
+where block_timestamp>=current_date-INTERVAL '10 WEEKS'
 group by date, period
 order by date desc
 
@@ -367,7 +367,7 @@ select
   count(distinct contract_address) as n_contracts,
   sum(n_contracts) over (partition by period order by date asc rows between unbounded preceding and current row) as cum_n_contracts
 from new_contracts
-where debut>=current_date-INTERVAL '3 MONTHS'
+where debut>=current_date-INTERVAL '10 WEEKS'
 group by date, period
 order by date desc
 """
@@ -383,7 +383,7 @@ select
   sum(n_txns) over (partition by period order by date asc rows between unbounded preceding and current row) as cum_n_txns,
   sum(n_wallets) over (partition by period order by date asc rows between unbounded preceding and current row) as cum_n_wallets
 from polygon.core.fact_event_logs
-  where block_timestamp >= current_date - INTERVAL '3 MONTHS'
+  where block_timestamp >= current_date - INTERVAL '10 WEEKS'
   and (event_name='Swap' or event_name='swap')
 group by date, period
 order by date desc
@@ -399,7 +399,7 @@ select
 from polygon.core.fact_event_logs where (event_name='Swap' or event_name='swap')
 group by origin_from_address
 )
-   where date >= current_date - INTERVAL '3 MONTHS'
+   where date >= current_date - INTERVAL '10 WEEKS'
 group by date
 )
 
