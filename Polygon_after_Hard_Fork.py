@@ -225,7 +225,7 @@ with SEND as
 (select MATIC_FROM_ADDRESS,
   sum(AMOUNT) as sent_amount
 from
-polygon.core.ez_matic_transfers
+polygon.core.ez_matic_transfers where amount is not null
 group by MATIC_FROM_ADDRESS
   ),
 
@@ -233,7 +233,7 @@ RECEIVE as
 (select MATIC_TO_ADDRESS,
   sum(AMOUNT) as received_amount
 from
-polygon.core.ez_matic_transfers
+polygon.core.ez_matic_transfers where amount is not null
 group by MATIC_TO_ADDRESS
   ),
 total_supp as (select sum(received_amount) as total_supply
@@ -241,12 +241,12 @@ total_supp as (select sum(received_amount) as total_supply
   left join SEND s on r.MATIC_TO_ADDRESS=s.MATIC_FROM_ADDRESS
   where sent_amount is null),
 t1 as
-(select date_trunc('week',BLOCK_TIMESTAMP) as date,
-sum(case when SYMBOL_IN ='WMATIC' then AMOUNT_IN else null end) as from_amountt,
-sum(case when SYMBOL_OUT ='WMATIC' then AMOUNT_OUT else null end) as to_amountt,
+(select date_trunc('day',BLOCK_TIMESTAMP) as date,
+sum(case when SYMBOL_IN like '%WMATIC%' then AMOUNT_IN/pow(10,18) else null end) as from_amountt,
+sum(case when SYMBOL_OUT like '%WMATIC%' then AMOUNT_OUT/pow(10,18) else null end) as to_amountt,
 from_amountt-to_amountt as circulating_volume
 from
-  polygon.sushi.ez_swaps
+  polygon.sushi.ez_swaps where amount_in is not null and amount_out is not null
 group by 1
 ),
   t3 as (select
@@ -264,7 +264,7 @@ with SEND as
 (select MATIC_FROM_ADDRESS,
   sum(AMOUNT) as sent_amount
 from
-polygon.core.ez_matic_transfers
+polygon.core.ez_matic_transfers where amount is not null
 group by MATIC_FROM_ADDRESS
   ),
 
@@ -272,7 +272,7 @@ RECEIVE as
 (select MATIC_TO_ADDRESS,
   sum(AMOUNT) as received_amount
 from
-polygon.core.ez_matic_transfers
+polygon.core.ez_matic_transfers where amount is not null
 group by MATIC_TO_ADDRESS
   ),
 total_supp as (select sum(received_amount) as total_supply
@@ -280,12 +280,12 @@ total_supp as (select sum(received_amount) as total_supply
   left join SEND s on r.MATIC_TO_ADDRESS=s.MATIC_FROM_ADDRESS
   where sent_amount is null),
 t1 as
-(select date_trunc('week',BLOCK_TIMESTAMP) as date,
-sum(case when SYMBOL_IN ='WMATIC' then AMOUNT_IN else null end) as from_amountt,
-sum(case when SYMBOL_OUT ='WMATIC' then AMOUNT_OUT else null end) as to_amountt,
+(select date_trunc('day',BLOCK_TIMESTAMP) as date,
+sum(case when SYMBOL_IN like '%WMATIC%' then AMOUNT_IN/pow(10,18) else null end) as from_amountt,
+sum(case when SYMBOL_OUT like '%WMATIC%' then AMOUNT_OUT/pow(10,18) else null end) as to_amountt,
 from_amountt-to_amountt as circulating_volume
 from
-  polygon.sushi.ez_swaps
+  polygon.sushi.ez_swaps where amount_in is not null and amount_out is not null
 group by 1
 ),
   t3 as (select
