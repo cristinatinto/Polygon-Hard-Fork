@@ -165,7 +165,7 @@ with st.expander("Check the analysis"):
         .encode(x='date:N', y='gas:Q',color='period')
         .properties(title='Daily gas evolution',))
 
-    col2.altair_chart(alt.Chart(df)
+    col2.altair_chart(alt.Chart(df2)
         .mark_bar()
         .encode(x='period:N', y='avg_gas:Q',color='period')
         .properties(title='Gas comparison'))
@@ -177,7 +177,7 @@ with st.expander("Check the analysis"):
         .encode(x='date:N', y='gas_limit:Q',color='period')
         .properties(title='Daily gas limit evolution',))
 
-    col2.altair_chart(alt.Chart(df)
+    col2.altair_chart(alt.Chart(df2)
         .mark_bar()
         .encode(x='period:N', y='gas_limit:Q',color='period')
         .properties(title='Gas limit comparison'))
@@ -189,7 +189,7 @@ with st.expander("Check the analysis"):
         .encode(x='date:N', y='gas_price:Q',color='period')
         .properties(title='Daily gas price evolution',))
 
-    col2.altair_chart(alt.Chart(df)
+    col2.altair_chart(alt.Chart(df2)
         .mark_bar()
         .encode(x='period:N', y='gas_price:Q',color='period')
         .properties(title='Gas price comparison'))
@@ -242,8 +242,8 @@ total_supp as (select sum(received_amount) as total_supply
   where sent_amount is null),
 t1 as
 (select date_trunc('week',BLOCK_TIMESTAMP) as date,
-sum(case when SYMBOL_IN ilike '%MATIC%' then AMOUNT_IN else null end) as from_amountt,
-sum(case when SYMBOL_OUT ilike '%MATIC%' then AMOUNT_OUT else null end) as to_amountt,
+sum(case when SYMBOL_IN ='WMATIC' then AMOUNT_IN else null end) as from_amountt,
+sum(case when SYMBOL_OUT ='WMATIC' then AMOUNT_OUT else null end) as to_amountt,
 from_amountt-to_amountt as circulating_volume
 from
   polygon.sushi.ez_swaps
@@ -281,8 +281,8 @@ total_supp as (select sum(received_amount) as total_supply
   where sent_amount is null),
 t1 as
 (select date_trunc('week',BLOCK_TIMESTAMP) as date,
-sum(case when SYMBOL_IN ilike '%MATIC%' then AMOUNT_IN else null end) as from_amountt,
-sum(case when SYMBOL_OUT ilike '%MATIC%' then AMOUNT_OUT else null end) as to_amountt,
+sum(case when SYMBOL_IN ='WMATIC' then AMOUNT_IN else null end) as from_amountt,
+sum(case when SYMBOL_OUT ='WMATIC' then AMOUNT_OUT else null end) as to_amountt,
 from_amountt-to_amountt as circulating_volume
 from
   polygon.sushi.ez_swaps
