@@ -244,7 +244,7 @@ t1 as
 (select date_trunc('day',BLOCK_TIMESTAMP) as date,
 sum(case when SYMBOL_IN like '%WMATIC%' then AMOUNT_IN/pow(10,18) else null end) as from_amountt,
 sum(case when SYMBOL_OUT like '%WMATIC%' then AMOUNT_OUT/pow(10,18) else null end) as to_amountt,
-from_amountt-to_amountt as circulating_volume
+from_amountt+to_amountt as circulating_volume
 from
   polygon.sushi.ez_swaps where amount_in is not null and amount_out is not null
 group by 1
@@ -283,7 +283,7 @@ t1 as
 (select date_trunc('day',BLOCK_TIMESTAMP) as date,
 sum(case when SYMBOL_IN like '%WMATIC%' then AMOUNT_IN/pow(10,18) else null end) as from_amountt,
 sum(case when SYMBOL_OUT like '%WMATIC%' then AMOUNT_OUT/pow(10,18) else null end) as to_amountt,
-from_amountt-to_amountt as circulating_volume
+from_amountt+to_amountt as circulating_volume
 from
   polygon.sushi.ez_swaps where amount_in is not null and amount_out is not null
 group by 1
@@ -383,7 +383,7 @@ select
   sum(n_txns) over (partition by period order by date asc rows between unbounded preceding and current row) as cum_n_txns,
   sum(n_wallets) over (partition by period order by date asc rows between unbounded preceding and current row) as cum_n_wallets
 from polygon.core.fact_event_logs
-  where block_timestamp >= current_date - INTERVAL '3 MONTHS
+  where block_timestamp >= current_date - INTERVAL '3 MONTHS'
   and (event_name='Swap' or event_name='swap')
 group by date, period
 order by date desc
@@ -399,7 +399,7 @@ select
 from polygon.core.fact_event_logs where (event_name='Swap' or event_name='swap')
 group by origin_from_address
 )
-   where date >= current_date - INTERVAL '3 MONTHS
+   where date >= current_date - INTERVAL '3 MONTHS'
 group by date
 )
 
