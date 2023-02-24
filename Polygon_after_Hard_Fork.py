@@ -491,7 +491,12 @@ with st.expander("Check the analysis"):
         .encode(x='period:N', y='n_new_wallets:Q',color='period')
         .properties(title='New swappers comparison'))
 
-
+st.markdown('')
+st.subheader('Key insights')
+st.markdown('- The recent hard-fork effort by Polygon has failed to effectively reduce gas fees for transactions, resulting in an uptick of gas fees collected. Despite consistent user count and transaction volume pre- and post-fork, the increase in gas fees cannot be attributed to user behavior.')
+st.markdown('- Several platforms have contributed to the recent surge in gas fees, along with other protocols operating on the Polygon network. However, despite this, Polygon remains competitive with other Layer 2 networks in terms of gas fees.')
+st.markdown('- While the Optimism network boasts impressively low gas fees, when factoring in the projects and activity present on the Polygon network, the cons seen in gas fees are somewhat evened out. Nonetheless, reducing gas fees remains a top priority for the Polygon team in order to enhance the networks efficiency and competitiveness. The challenge is on, and we cant wait to see how the Polygon team will tackle it!)    
+st.markdown('')
 st.markdown('This dashboard has been done by _Cristina Tintó_ powered by **Flipside Crypto** data and carried out for **MetricsDAO**.')
 st.markdown('All codes can be found here: https://github.com/cristinatinto/Polygon-Hard-Fork')
 
